@@ -1,4 +1,5 @@
 import 'package:Smart_Cargo_mobile/services/authService.dart';
+import 'package:Smart_Cargo_mobile/services/driverService.dart';
 import 'package:flutter/material.dart';
 
 import 'homePage.dart';
@@ -15,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
 
   String emailError;
   String passwordError;
+  bool loading = false;
 
   void displayDialog(context, title, text) => showDialog(
         context: context,
@@ -148,50 +150,62 @@ class _LoginPageState extends State<LoginPage> {
                           height: 20,
                         ),
                         FlatButton(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 12,
-                                horizontal:
-                                    MediaQuery.of(context).size.width / 3.5),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(5.0)),
-                            color: Color(0xff4D5C84),
-                            onPressed: () async {
-                              var email = _emailController.text;
-                              var password = _passwordController.text;
-                              var jwt =
-                                  await AuthService.login(email, password);
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal:
+                                  MediaQuery.of(context).size.width / 3.5),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(5.0)),
+                          color: Color(0xff4D5C84),
+                          onPressed: () async {
+                            var email = _emailController.text;
+                            var password = _passwordController.text;
+                            setState(() {
+                              loading = true;
+                            });
+                            var jwt = await AuthService.login(email, password);
 
-                              if (email.isNotEmpty && password.isNotEmpty) {
-                                if (jwt != null &&
-                                    AuthService.decodeToken(jwt)["role"] ==
-                                        "driver") {
-                                  AuthService.storeToken(jwt);
-                                  Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              HomePage(jwt: jwt)));
-                                }
-                              } else {
-                                if (password.isEmpty || email.isEmpty)
-                                  displayDialog(context, "Invalid Credentials",
-                                      "Email and Password Fields can't be empty");
-                                else if (jwt != null &&
-                                    AuthService.decodeToken(jwt)["role"] !=
-                                        "driver")
-                                  displayDialog(context, "Unauthorized",
-                                      "You are not authorized to used this mobile appication");
-                                else
-                                  displayDialog(context, "Invalid Credentials",
-                                      "Your credentials doesn't match with our record");
+                            if (email.isNotEmpty && password.isNotEmpty) {
+                              if (jwt != null &&
+                                  AuthService.decodeToken(jwt)["role"] ==
+                                      "driver") {
+                                AuthService.storeToken(jwt);
+                                DriverService.jwt = jwt;
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            HomePage(jwt: jwt)));
                               }
-                            },
-                            child: Text(
-                              "Log In",
-                              style: TextStyle(
-                                  fontFamily: 'Exo',
-                                  color: Colors.white,
-                                  fontSize: 16),
-                            )),
+                            }
+
+                            if (password.isEmpty || email.isEmpty)
+                              displayDialog(context, "Invalid Credentials",
+                                  "Email and Password Fields can't be empty");
+                            else if (jwt == null)
+                              displayDialog(context, "Invalid Credentials",
+                                  "Your credentials doesn't match with our record");
+                            else if (jwt != null &&
+                                AuthService.decodeToken(jwt)["role"] !=
+                                    "driver")
+                              displayDialog(context, "Unauthorized",
+                                  "You are not authorized to used this mobile appication");
+
+                            setState(() {
+                              loading = false;
+                            });
+                          },
+                          child: loading
+                              ? CircularProgressIndicator(
+                                  backgroundColor: Colors.white,
+                                )
+                              : Text(
+                                  "LogIn",
+                                  style: TextStyle(
+                                      fontFamily: 'Exo',
+                                      color: Colors.white,
+                                      fontSize: 16),
+                                ),
+                        ),
                         SizedBox(
                           height: 20,
                         )
