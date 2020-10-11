@@ -94,21 +94,20 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
         //   child: Icon(Icons.refresh),
         // ),
         appBar: AppBar(
-          title: 
-            Text("Current Schedule",
-                style: TextStyle(color: Colors.black, fontFamily: 'Exo')),
-       
+          title: Text("Current Schedule",
+              style: TextStyle(color: Colors.black, fontFamily: 'Exo')),
           backgroundColor: Colors.white,
           elevation: 0,
         ),
         body: SafeArea(
           child: SingleChildScrollView(
-                      child: StreamBuilder(
+            child: StreamBuilder(
                 stream: scheduleAndProfle,
                 builder: (context, AsyncSnapshot<List> snapshot) {
                   if (snapshot.hasData && isLoading == false) {
                     var data = ScheduleResponse.fromJson(snapshot.data[0]);
-                    var profileData = ProfileResponse.fromJson(snapshot.data[1]);
+                    var profileData =
+                        ProfileResponse.fromJson(snapshot.data[1]);
                     if (data.schedule == null)
                       return Column(
                         children: [
@@ -245,27 +244,27 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
                               ),
                               child: profileData.profile != null
                                   ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Total Number of orders : $totalOrders",
-                                            style: TextStyle(
-                                                fontFamily: 'Exo',
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16),
-                                          ),
-                                          SizedBox(
-                                            height: 8,
-                                          ),
-                                          Divider(
-                                            color: Color(0xff4D5C84),
-                                          ),
-                                          SizedBox(
-                                            height: 8,
-                                          ),
-                                          IntrinsicHeight(child:
-                                          Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Total Number of orders : $totalOrders",
+                                          style: TextStyle(
+                                              fontFamily: 'Exo',
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16),
+                                        ),
+                                        SizedBox(
+                                          height: 8,
+                                        ),
+                                        Divider(
+                                          color: Color(0xff4D5C84),
+                                        ),
+                                        SizedBox(
+                                          height: 8,
+                                        ),
+                                        IntrinsicHeight(
+                                          child: Row(
                                             children: [
                                               Expanded(
                                                 child: Column(
@@ -288,15 +287,19 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           fontSize: 30,
-                                                          color: Color(0xff4D5C84)),
+                                                          color: Color(
+                                                              0xff4D5C84)),
                                                     ),
                                                   ],
                                                 ),
                                               ),
-                                             VerticalDivider(color: Color(0xff4D5C84),
-            thickness: 0.5, width: 20,
-            indent: 5,
-            endIndent:5,),
+                                              VerticalDivider(
+                                                color: Color(0xff4D5C84),
+                                                thickness: 0.5,
+                                                width: 20,
+                                                indent: 5,
+                                                endIndent: 5,
+                                              ),
                                               Expanded(
                                                 child: Column(
                                                   children: [
@@ -304,7 +307,8 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
                                                       'Delivered',
                                                       style: TextStyle(
                                                         fontFamily: 'Exo',
-                                                        fontWeight: FontWeight.bold,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                         fontSize: 16,
                                                       ),
                                                     ),
@@ -318,16 +322,17 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           fontSize: 30,
-                                                          color: Color(0xff4D5C84)),
+                                                          color: Color(
+                                                              0xff4D5C84)),
                                                     ),
                                                   ],
                                                 ),
                                               ),
                                             ],
                                           ),
-                                          )
-                                        ],
-                                      )
+                                        )
+                                      ],
+                                    )
                                   : Center(child: CircularProgressIndicator()),
                             ),
                           ),
@@ -336,7 +341,7 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
                     }
                   }
 
-                  return  Center(child: CircularProgressIndicator());
+                  return  Container(height:MediaQuery.of(context).size.height/1.5, child: Center(child: CircularProgressIndicator()));
                 }),
           ),
         ),
