@@ -94,6 +94,7 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
         //   child: Icon(Icons.refresh),
         // ),
         appBar: AppBar(
+          centerTitle: true,
           title: Text("Current Schedule",
               style: TextStyle(color: Colors.black, fontFamily: 'Exo')),
           backgroundColor: Colors.white,

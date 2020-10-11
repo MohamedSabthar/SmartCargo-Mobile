@@ -53,6 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
         //   child: Icon(Icons.refresh),
         // ),
         appBar: AppBar(
+                 centerTitle: true,
           title: Text("Driver Profile",
               style: TextStyle(color: Colors.black, fontFamily: 'Exo')),
           backgroundColor: Colors.white,
