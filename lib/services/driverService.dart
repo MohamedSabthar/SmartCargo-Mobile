@@ -23,4 +23,23 @@ class DriverService {
         ? json.decode(res.body)
         : " ";
   }
+
+    static Future updateDeliveryStatus(String id) async {
+    var res = await http.put("${API.base}/driver/deliverd/$id",
+       headers: header);
+
+    return res.statusCode == 200
+        ? jsonDecode(res.body)
+        : null; //return json token from the response
+  }
+
+  static Future updateSheduleStatus(String id) async {
+    var res = await http.put("${API.base}/driver/schedule/$id",
+       headers: header);
+
+    return res.statusCode == 200
+        ? jsonDecode(res.body)
+        : null; //return json token from the response
+  }
+
 }
