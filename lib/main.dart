@@ -1,4 +1,4 @@
-import 'package:Smart_Cargo_mobile/pages/homePage.dart';
+import 'package:Smart_Cargo_mobile/pages/home.dart';
 import 'package:Smart_Cargo_mobile/pages/loginPage.dart';
 import 'package:Smart_Cargo_mobile/services/authService.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
             if (!snapshot.hasData) return CircularProgressIndicator();
             if (snapshot.data != null) {
               var jwt = snapshot.data;
-              return jwt.split(".").length != 3 ? LoginPage() : HomePage(jwt: jwt,);
+              return jwt.split(".").length != 3 ? LoginPage() : HomePage();
             }
             return LoginPage();
           }),

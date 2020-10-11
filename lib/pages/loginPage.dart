@@ -2,7 +2,7 @@ import 'package:Smart_Cargo_mobile/services/authService.dart';
 import 'package:Smart_Cargo_mobile/services/driverService.dart';
 import 'package:flutter/material.dart';
 
-import 'homePage.dart';
+import 'home.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -174,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            HomePage(jwt: jwt)));
+                                            HomePage()));
                               }
                             }
 

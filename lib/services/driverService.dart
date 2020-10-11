@@ -8,6 +8,14 @@ class DriverService {
   static String jwt;
   static get header => {"Authorization": 'Bearer $jwt'};
 
+  static Future profile() async {
+     jwt = await AuthService.token();
+    var res = await http.get('${API.base}/driver/profile', headers: header);
+    return res.statusCode == 200
+        ? json.decode(res.body)
+        : " ";
+  }
+
   static Future getSchedules() async {
     jwt = await AuthService.token();
     var res = await http.get('${API.base}/driver/', headers: header);
