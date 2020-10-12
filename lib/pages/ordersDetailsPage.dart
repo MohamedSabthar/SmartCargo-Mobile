@@ -19,6 +19,7 @@ class _OrdersDetailPageState extends State<OrdersDetailPage> {
       fontSize: 14,
       fontWeight: FontWeight.bold);
   int activeIndex = 0;
+  
 
   @override
   void initState() {
@@ -32,6 +33,13 @@ class _OrdersDetailPageState extends State<OrdersDetailPage> {
         return;
     });
     activeIndex = index;
+    if(activeIndex==orders.length){
+         DriverService.updateSheduleStatus(widget.data.schedule.sId)
+              .then((val) async {
+            if (val != null)
+              Navigator.of(context).pop();
+          });
+    }
   }
 
   confirmDeleiveryStatusUpdate(id) {
@@ -83,34 +91,29 @@ class _OrdersDetailPageState extends State<OrdersDetailPage> {
     if (activeIndex < orders.length - 1) {
       DriverService.updateDeliveryStatus(orders[activeIndex].sId)
           .then((value) async {
-        if (value != null && OrderResponse.fromJson(value).order!=null )
-          {
-            setState(() {
+        if (value != null && OrderResponse.fromJson(value).order != null) {
+          setState(() {
             orders[activeIndex].status = 'delivered';
             activeIndex = activeIndex + 1;
-          });}
+          });
+        }
       });
     } else if (activeIndex == orders.length - 1) {
       print('last');
 
       DriverService.updateDeliveryStatus(orders[activeIndex].sId)
           .then((value) async {
-        if (value != null && OrderResponse.fromJson(value).order!=null )
-         { 
-           
-           //update the scheudule to delivered on last
-           DriverService.updateSheduleStatus(widget.data.schedule.sId).then((val) async {
-              if(val!=null)
-               setState(() {
-            orders[activeIndex].status = 'delivered';
-            activeIndex = activeIndex + 1;
+        if (value != null && OrderResponse.fromJson(value).order != null) {
+          //update the scheudule to delivered on last
+          DriverService.updateSheduleStatus(widget.data.schedule.sId)
+              .then((val) async {
+            if (val != null)
+              setState(() {
+                orders[activeIndex].status = 'delivered';
+                activeIndex = activeIndex + 1;
+              });
           });
-           });
-           
-         
-          
-          
-          }
+        }
       });
     }
   }

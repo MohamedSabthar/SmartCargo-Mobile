@@ -24,7 +24,8 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
   bool initLoad = true;
 
   setStateIfMounted(f) {
-    if (mounted) setState(f);
+    if (mounted) 
+    setState(f);
   }
 
 //load profile of driver
@@ -47,14 +48,14 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
 
 //load schedule from network
   loadSchedule() {
-    setState(() {
+    setStateIfMounted(() {
       isLoading = true;
     });
 
     DriverService.getSchedules().then((res) async {
       _schduleController.add(res);
-
-      setState(() {
+      
+      setStateIfMounted(() {
         isLoading = false;
       });
       return res;
@@ -70,7 +71,7 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
       initLoad = false;
       this.refresh();
     } else {
-      Timer.periodic(Duration(seconds: 120), (_) => {loadSchedule()});
+      Timer.periodic(Duration(seconds: 10), (_) => {loadSchedule()});
     }
   }
 
@@ -109,6 +110,7 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
                     var data = ScheduleResponse.fromJson(snapshot.data[0]);
                     var profileData =
                         ProfileResponse.fromJson(snapshot.data[1]);
+                        
                     if (data.schedule == null)
                       return Column(
                         children: [
