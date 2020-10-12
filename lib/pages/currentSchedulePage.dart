@@ -16,11 +16,10 @@ class ScheduleOrderPage extends StatefulWidget {
 class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
   //schedule details
   StreamController _schduleController;
-  StreamController _profileController;
-  StreamZip scheduleAndProfle;
+
+
 
   bool isLoading = false;
-  bool isProfileLoaded = false;
   bool initLoad = true;
 
   setStateIfMounted(f) {
@@ -28,23 +27,7 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
     setState(f);
   }
 
-//load profile of driver
-  loadProfile() {
-    setStateIfMounted(() {
-      isLoading = true;
-    });
 
-    DriverService.profile().then((res) async {
-      _profileController.add(res);
-      if (mounted)
-        setStateIfMounted(() {
-          isLoading = false;
-        });
-      return res;
-    });
-
-    print("profile");
-  }
 
 //load schedule from network
   loadSchedule() {
@@ -71,7 +54,7 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
       initLoad = false;
       this.refresh();
     } else {
-      Timer.periodic(Duration(seconds: 10), (_) => {loadSchedule()});
+      Timer.periodic(Duration(seconds: 120), (_) => {loadSchedule()});
     }
   }
 
@@ -79,10 +62,6 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
   void initState() {
     super.initState();
     _schduleController = new StreamController();
-    _profileController = new StreamController();
-    scheduleAndProfle =
-        new StreamZip([_schduleController.stream, _profileController.stream]);
-    this.loadProfile();
     this.refresh();
   }
 
@@ -104,12 +83,12 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
         body: SafeArea(
           child: SingleChildScrollView(
             child: StreamBuilder(
-                stream: scheduleAndProfle,
-                builder: (context, AsyncSnapshot<List> snapshot) {
+                stream: _schduleController.stream,
+                builder: (context, snapshot) {
                   if (snapshot.hasData && isLoading == false) {
-                    var data = ScheduleResponse.fromJson(snapshot.data[0]);
+                    var data = ScheduleResponse.fromJson(snapshot.data);
                     var profileData =
-                        ProfileResponse.fromJson(snapshot.data[1]);
+                        ProfileResponse.fromJson(snapshot.data);
                         
                     if (data.schedule == null)
                       return Column(
@@ -382,7 +361,7 @@ class _ScheduleOrderPageState extends State<ScheduleOrderPage> {
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           OrdersDetailPage(
-                                                              data: data)));
+                                                              data: data))).then((value) => this.loadSchedule());
                                             },
                                             child: Text(
                                               "Delivery Details",

@@ -19,7 +19,7 @@ class _OrdersDetailPageState extends State<OrdersDetailPage> {
       fontSize: 14,
       fontWeight: FontWeight.bold);
   int activeIndex = 0;
-  
+  bool loading = false;
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _OrdersDetailPageState extends State<OrdersDetailPage> {
          DriverService.updateSheduleStatus(widget.data.schedule.sId)
               .then((val) async {
             if (val != null)
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(activeIndex);
           });
     }
   }
@@ -89,11 +89,15 @@ class _OrdersDetailPageState extends State<OrdersDetailPage> {
 
   updateDeliveryStatus() {
     if (activeIndex < orders.length - 1) {
+      setState(() {
+            loading = true;
+          });
       DriverService.updateDeliveryStatus(orders[activeIndex].sId)
           .then((value) async {
         if (value != null && OrderResponse.fromJson(value).order != null) {
           setState(() {
             orders[activeIndex].status = 'delivered';
+            loading = false;
             activeIndex = activeIndex + 1;
           });
         }
@@ -180,7 +184,11 @@ class _OrdersDetailPageState extends State<OrdersDetailPage> {
                     child: Row(
                   children: [
                     Text('Delivery Status : ', style: lableStyle),
-                    Text('${order.status}')
+                   this.activeIndex==index && loading ? SizedBox(
+                child: CircularProgressIndicator(),
+                height: 8.0,
+                width: 8.0,
+              ): Text('${order.status}')
                   ],
                 )),
               ],
@@ -244,7 +252,9 @@ class _OrdersDetailPageState extends State<OrdersDetailPage> {
       backgroundColor: Color(0xffF3F3F3),
       appBar: AppBar(
         centerTitle: true,
-        leading: BackButton(color: Color(0xff4D5C84)),
+        leading: BackButton(color: Color(0xff4D5C84),onPressed: (){
+          Navigator.of(context).pop(activeIndex);
+        },),
         title: Text("Delivery Details",
             style: TextStyle(color: Colors.black, fontFamily: 'Exo')),
         backgroundColor: Colors.white,
