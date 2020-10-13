@@ -2,6 +2,7 @@ import 'package:Smart_Cargo_mobile/model/orderResponse.dart';
 import 'package:Smart_Cargo_mobile/model/scheduleResponse.dart' as sr;
 import 'package:Smart_Cargo_mobile/services/driverService.dart';
 import 'package:flutter/material.dart';
+import 'package:map_launcher/map_launcher.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class OrdersDetailPage extends StatefulWidget {
@@ -12,6 +13,7 @@ class OrdersDetailPage extends StatefulWidget {
 }
 
 class _OrdersDetailPageState extends State<OrdersDetailPage> {
+  
   List<sr.Route> orders;
   final lableStyle = TextStyle(
       color: Color(0xff4D5C84),
@@ -20,6 +22,47 @@ class _OrdersDetailPageState extends State<OrdersDetailPage> {
       fontWeight: FontWeight.bold);
   int activeIndex = 0;
   bool loading = false;
+
+  openMapsSheet(context) async {
+    try {
+      final coords = Coords(orders[activeIndex].location.lat,orders[activeIndex].location.lang);
+      final title = 'ORDER ID : ${orders[activeIndex].sId}';
+      final description = orders[activeIndex].phone;
+      final availableMaps = await MapLauncher.installedMaps;
+
+      showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Container(
+                child: Wrap(
+                  children: <Widget>[
+                    for (var map in availableMaps)
+                      ListTile(
+                        onTap: () => map.showMarker(
+                          coords: coords,
+                          title: title,
+                          description: description
+                        ),
+                        title: Text(map.mapName),
+                        leading: Image(
+                          image: map.icon,
+                          height: 30.0,
+                          width: 30.0,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   void initState() {
@@ -207,9 +250,7 @@ class _OrdersDetailPageState extends State<OrdersDetailPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(5.0)),
                             color: Color(0xff4D5C84),
-                            onPressed: () {
-                              print('view path');
-                            },
+                            onPressed: () => openMapsSheet(context),
                             child: Text(
                               "View Path",
                               style: TextStyle(
